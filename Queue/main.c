@@ -60,21 +60,36 @@ int toNumber(char c) {
     return c - '0';
 }
 
+int normalizeNumber(int number) {
+    int ret = 0;
+
+    while (number) {
+        ret *= 10;
+        ret += number % 10;
+        number /= 10;
+    }
+
+    return ret;
+}
+
 void analyzeString(char *string, int length, Queue *queue) {
 
     // Will search for numbers
-    for (int i = length - 1; i >= 0; i--) {
+    for (int i = 0; i < length; i++) {
         char c = string[i];
 
         if (isNumber(c)) {
             int numPower = 0;
             int number = 0;
 
-            for (; i >= 0 && isNumber(string[i]); i--, numPower++) {
+            for (; i < length && isNumber(string[i]); i++, numPower++) {
                 number += toNumber(string[i]) * power(10, numPower);
             }
 
-            qPush(queue, number);
+            // Normalization is necessary because
+            // we reading string from start and all numbers are reversed
+            // (12 -> 21, 1234 -> 4321)
+            qPush(queue, normalizeNumber(number));
         }
     }
 }
