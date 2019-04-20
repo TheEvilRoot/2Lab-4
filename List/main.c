@@ -2,13 +2,9 @@
 #include <stdlib.h>
 
 #include "list.h"
-#include "tests.h"
+#define SHELL_CLEAR "clear"
 
-#ifdef SHELL_CLEAR
 #define clearScreen() { system(SHELL_CLEAR); }
-#else
-#define clearScreen() { }
-#endif
 
 char * enterString(const char * message) {
   char *str = (char*) calloc(1,  sizeof(char)); // Checked
@@ -91,8 +87,6 @@ int enterInt(const char *message) {
 }
 
 int main(int argc, const char *argv[]) {
-  runTests();
-
   List *list = emptyList();
   if (list == NULL) {
     printf("Sorry, but there's an unexpected error with list creation. Maybe memory is full.\n");
