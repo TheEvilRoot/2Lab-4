@@ -5,6 +5,9 @@
 
 Node * newNode(int data) {
   Node *node = (Node*) calloc(1, sizeof(Node));
+  if (node == NULL) {
+    return NULL;
+  }
 
   node->data = data;
   node->next = NULL;
@@ -15,6 +18,9 @@ Node * newNode(int data) {
 int nodeAppend(Node *node, int data, int index) {
   if (node->next == NULL) {
     node->next = newNode(data);
+    if (node->next == NULL) {
+      return -1;
+    }
     return index + 1;
   } else {
     return nodeAppend(node->next, data, index + 1);
@@ -75,6 +81,9 @@ List * listOf(int *items, int count) {
 int listAppend(List *list, int data) {
   if (list->root == NULL) {
     list->root = newNode(data);
+    if (list->root == NULL) {
+      return -1;
+    }
     list->size = 1;
     return 0;
   } else {
@@ -87,9 +96,15 @@ int listAppend(List *list, int data) {
 int listPush(List *list, int data) {
   if (list->root == NULL) {
     list->root = newNode(data);
+    if (list->root == NULL) {
+      return -1;
+    }
     list->size = 1;
   } else {
     Node *node = newNode(data);
+    if (node == NULL) {
+      return -1;
+    }
     node->next = list->root;
     list->root = node;
     list->size++;
