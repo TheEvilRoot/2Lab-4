@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <CoreFoundation/CoreFoundation.h>
 
 #include "list.h"
 #include "tests.h"
