@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <CoreFoundation/CoreFoundation.h>
 
 #include "list.h"
 #include "tests.h"
+
+#ifdef SHELL_CLEAR
+#define clearScreen() { system(SHELL_CLEAR); }
+#else
+#define clearScreen() { }
+#endif
 
 char * enterString(const char * message) {
   char *str = (char*) calloc(1,  sizeof(char)); // Checked
@@ -61,6 +68,29 @@ int parseInt(char *str) {
   return number * sign;
 }
 
+// Should it be in list.c file?
+void printList(List *list) {
+  for (int i = 0; i < listSize(list); i++) {
+    Node *n = listGet(list, i);
+    if (n == NULL) {
+      printf("Ow! There's NULL on index %d. *silently went out the window*\n", i);
+      continue;
+    }
+    printf("%d: %d\n", i, n->data);
+  }
+}
+
+int enterInt(const char *message) {
+  int ret = 0;
+  do {
+    fflush(stdin);
+    fseek(stdin, 0, SEEK_END);
+    rewind(stdin);
+    printf("%s", message);
+  } while (!scanf("%d", &ret));
+  return ret;
+}
+
 int main(int argc, const char *argv[]) {
   runTests();
 
@@ -94,14 +124,65 @@ int main(int argc, const char *argv[]) {
 
   printf("Sure. Let's see on your initial list: \n");
 
-  for (int i = 0; i < listSize(list); i++) {
-    Node *n = listGet(list, i);
-    if (n == NULL) {
-      printf("Ow! There's NULL on index %d. *silently went out the window*\n", i);
+  printList(list);
+
+  printf("Next...\nJust enter a new number, then enter number in list followed by your new number.\n");
+
+  while (1) {
+    clearScreen()
+
+    printf("[S]how list\n");
+    printf("[E]nter new number\n");
+    printf("[D]ubug list\n");
+    printf("[Q]uit program\n");
+
+    char *inputString = enterString("");
+    int length = stringLength(inputString);
+    if (inputString == NULL || length == 0) {
       continue;
     }
-    printf("%d: %d\n", i, n->data);
-  }
+    switch(inputString[0]) {
+      case 's': case 'S': {
+        printList(list);
+        break;
+      }
+      case 'd': case 'D': {
+        listDebug(list);
+        break;
+      }
+      case 'e': case 'E': {
+        int newNumber = enterInt("So, enter new number: ");
+        printf("Sure. Let's insert %d after...\n", newNumber);
+        int followedNumber = enterInt("Enter number followed by your new number: ");
+        int indexOfFollowed = listIndexOf(list, followedNumber);
+        if (indexOfFollowed == -1) { // Number not in the list
+          printf("Hmm... I think there's no such number in list...\n");
+        } else {
+          printf("Okay. Let's insert %d after all %d in the list...\n", newNumber, followedNumber);
 
-  return 0;
+          int count = 0;
+          Node **matches = listFindAll(list, followedNumber, &count);
+          if (matches != NULL) {
+            printf("Inserting[");
+            for (int i = 0; i < count; i++) {
+              if (matches[i] != NULL) {
+                listInsert(list, matches[i], newNumber);
+              }
+              printf("#");
+            }
+            printf("] Done! %d numbers inserted\n", count);
+          } else {
+            printf("Ooops... Something went wrong and there's no such numbers in the list or searching was fail... Can we just try again?\n");
+          }
+        }
+        break;
+      }
+      case 'q': case 'Q': {
+        printf("Sure. Goodbye!\n");
+        return 0;
+      }
+    }
+
+    enterString("Type any key to return to menu...\n");
+  }
 }
