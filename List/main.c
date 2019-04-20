@@ -87,7 +87,9 @@ int main(int argc, const char *argv[]) {
     }
 
     int newNumber = parseInt(inputString);
-    listAppend(list, newNumber);
+    if (listAppend(list, newNumber) == -1) {
+      printf("Unexpected error has occurred while appending list. We will skip this number for now\n");
+    }
   }
 
   printf("Sure. Let's see on your initial list: \n");
