@@ -29,6 +29,12 @@ void listSet(List *list, int index, int newData);
 
 int listSize(List *list);
 
+void listInsert(List *list, Node *after, int data);
+
+Node * listFind(List *list, int data);
+int listIndexOf(List *list, int data);
+Node ** listFindAll(List *list, int data, int *sizePtr);
+
 Node * newNode(int data);
 int nodeAppend(Node *node, int data, int index);
 Node * nodeGet(Node *from, int index);

@@ -133,3 +133,83 @@ void listDebug(List *list) {
 int listSize(List *list) {
   return list->size;
 }
+
+void listInsert(List *list, Node *after, int data) {
+  if (list == NULL || after == NULL) {
+    return;
+  }
+
+  Node *new = newNode(data);
+  if (new == NULL) {
+    return;
+  }
+  new->next = after->next;
+  after->next = new;
+  list->size++;
+}
+
+int listIndexOf(List *list, int data) {
+  if (list == NULL) {
+    return  -1;
+  }
+
+  for (int i = 0; i < list->size; i++) {
+    Node *node = listGet(list, i);
+    if (node == NULL) return -1;
+
+    if (node->data == data) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+Node * listFind(List *list, int data) {
+  int index = listIndexOf(list, data);
+
+  return index >= 0 && index < list->size ? listGet(list, index) : NULL;
+}
+
+Node ** listFindAll(List *list, int data, int *sizePtr) {
+  if (list == NULL || sizePtr == NULL) {
+    return NULL;
+  }
+
+  Node **matches = (Node**) calloc(list->size, sizeof(Node*));
+
+  if (matches == NULL) {
+    return NULL;
+  }
+
+  for (int i = 0; i < list->size; i++) {
+    matches[i] = NULL;
+  }
+
+
+  int index = 0;
+
+  for (int i = 0; i < list->size; i++) {
+    Node *node = listGet(list, i);
+    if (node == NULL) {
+      break;
+    }
+
+    if (node->data == data) {
+      matches[index++] = node;
+    }
+  }
+
+  int actualSize = 0;
+  for (int i = 0; i < list->size; i++) {
+    if (matches[i] != NULL) {
+      actualSize++;
+    } else {
+      break;
+    }
+  }
+
+  matches = (Node**) realloc(matches, actualSize * sizeof(Node*));
+  *sizePtr = actualSize;
+
+  return matches;
+}
