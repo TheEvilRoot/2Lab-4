@@ -116,5 +116,7 @@ int main() {
 
     printf("Sum is %d\n", sum);
 
+	enterString("Print any symbol to exit the program...\n");
+
     return 0;
 }

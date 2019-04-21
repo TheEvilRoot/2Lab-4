@@ -2,7 +2,11 @@
 #include <stdlib.h>
 
 #include "list.h"
+#ifdef _WIN32
+#define SHELL_CLEAR "cls"
+#else
 #define SHELL_CLEAR "clear"
+#endif
 
 #define clearScreen() { system(SHELL_CLEAR); }
 
@@ -119,7 +123,7 @@ int main(int argc, const char *argv[]) {
 
   printList(list);
 
-  printf("Next...\nJust enter a new number, then enter number in list followed by your new number.\n");
+  printf("Next...\nJust enter a new number, then enter number in list that will be followed by new number\n");
 
   while (1) {
     clearScreen()
